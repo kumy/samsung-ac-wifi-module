@@ -57,52 +57,52 @@ Each payload may be decomposed in `command`, `sub`
 
 ## Registers table
 
-    ╔═══════╦═══════════════════════════╦══════╦══════════╗
-    ║ Group ║           Name            ║ Mode ║ Register ║
-    ╠═══════╬═══════════════════════════╬══════╬══════════╣
-    ║ 12    ║ AC_FUN_ENABLE             ║ (RW) ║ 01       ║
-    ║ 12    ║ AC_FUN_POWER              ║ (RW) ║ 02       ║
-    ║ 12    ║ AC_FUN_OPMODE             ║ (RW) ║ 43       ║
-    ║ 12    ║ AC_FUN_COMODE             ║ (RW) ║ 44       ║
-    ║ 12    ║ AC_FUN_TEMPSET            ║ (RW) ║ 5a       ║
-    ║ 12    ║ AC_FUN_TEMPNOW            ║ (R)  ║ 5c       ║
-    ║ 12    ║ AC_FUN_WINDLEVEL          ║ (RW) ║ 62       ║
-    ║ 12    ║ AC_FUN_DIRECTION          ║ (RW) ║ 63       ║
-    ║ 12    ║ AC_FUN_SLEEP              ║ (RW) ║ 73       ║
-    ║ 12    ║ ?                         ║ (?)  ║ 74       ║
-    ║ 12    ║ ?                         ║ (?)  ║ ea       ║
-    ║ 12    ║ AC_FUN_ERROR              ║ (RW) ║ f7       ║
-    ║ ═════ ║ ═════════════════════════ ║ ════ ║ ════════ ║
-    ║ 13    ║ AC_ADD_AUTOCLEAN          ║ (RW) ║ 32       ║
-    ║ 13    ║ AC_ADD_SETKWH             ║ (RW) ║ 40       ║
-    ║ 13    ║ AC_ADD_CLEAR_FILTER_ALARM ║ (RW) ║ 44       ║
-    ║ 13    ║ AC_ADD_STARTWPS           ║ (RW) ║ 43       ║
-    ║ 13    ║ AC_ADD_SPI                ║ (RW) ║ 75       ║
-    ║ 13    ║ AC_OUTDOOR_TEMP           ║ (R)  ║ 76       ║
-    ║ 13    ║ AC_COOL_CAPABILITY        ║ (R)  ║ 77       ║
-    ║ 13    ║ AC_WARM_CAPABILITY        ║ (R)  ║ 78       ║
-    ║ 13    ║ AC_ADD_APMODE_END         ║ (W)  ║ ?        ║
-    ║ ═════ ║ ═════════════════════════ ║ ════ ║ ════════ ║
-    ║ 14    ║ AC_ADD2_USEDWATT          ║ (R)  ║ 32       ║
-    ║ 14    ║ AC_SG_WIFI                ║ (W)  ║ 37       ║
-    ║ 14    ║ AC_SG_INTERNET            ║ (W)  ║ 38       ║
-    ║ 14    ║ AC_ADD2_OPTIONCODE        ║ (R)  ║ 39       ║
-    ║ 14    ║ AC_ADD2_USEDPOWER         ║ (R)  ║ e0       ║
-    ║ 14    ║ AC_ADD2_USEDTIME          ║ (R)  ║ e4       ║
-    ║ 14    ║ AC_ADD2_FILTER_USE_TIME   ║ (R)  ║ e6       ║
-    ║ 14    ║ AC_ADD2_CLEAR_POWERTIME   ║ (RW) ║ e8       ║
-    ║ 14    ║ AC_ADD2_FILTERTIME        ║ (RW) ║ e9       ║
-    ║ 14    ║ AC_ADD2_OUT_VERSION       ║ (R)  ║ f3       ║
-    ║ 14    ║ AC_ADD2_PANEL_VERSION     ║ (R)  ║ f4       ║
-    ║ 14    ║ AC_FUN_MODEL              ║ (R)  ║ f5       ║
-    ║ 14    ║ AC_ADD2_VERSION           ║ (RW) ║ f6       ║
-    ║ 14    ║ AC_SG_MACHIGH             ║ (W)  ║ f7       ║
-    ║ 14    ║ AC_SG_MACMID              ║ (W)  ║ f8       ║
-    ║ 14    ║ AC_SG_MACLOW              ║ (W)  ║ f9       ║
-    ║ 14    ║ AC_SG_VENDER01            ║ (W)  ║ fa       ║
-    ║ 14    ║ AC_SG_VENDER02            ║ (W)  ║ fb       ║
-    ║ 14    ║ AC_SG_VENDER03            ║ (W)  ║ fc       ║
-    ╚═══════╩═══════════════════════════╩══════╩══════════╝
+    ╔═══════╦═══════════════════════════╦══════╦══════════╦══════╗
+    ║ Group ║           Name            ║ Mode ║ Register ║ Size ║
+    ╠═══════╬═══════════════════════════╬══════╬══════════╬══════╣
+    ║ 12    ║ AC_FUN_ENABLE             ║ (RW) ║ 01       ║ 01   ║
+    ║ 12    ║ AC_FUN_POWER              ║ (RW) ║ 02       ║ 01   ║
+    ║ 12    ║ AC_FUN_OPMODE             ║ (RW) ║ 43       ║ 01   ║
+    ║ 12    ║ AC_FUN_COMODE             ║ (RW) ║ 44       ║ 01   ║
+    ║ 12    ║ AC_FUN_TEMPSET            ║ (RW) ║ 5a       ║ 01   ║
+    ║ 12    ║ AC_FUN_TEMPNOW            ║ (R)  ║ 5c       ║ 01   ║
+    ║ 12    ║ AC_FUN_WINDLEVEL          ║ (RW) ║ 62       ║ 01   ║
+    ║ 12    ║ AC_FUN_DIRECTION          ║ (RW) ║ 63       ║ 01   ║
+    ║ 12    ║ AC_FUN_SLEEP              ║ (RW) ║ 73       ║ 01   ║
+    ║ 12    ║ ?                         ║ (?)  ║ 74       ║ 01   ║
+    ║ 12    ║ ?                         ║ (?)  ║ ea       ║ 01   ║
+    ║ 12    ║ AC_FUN_ERROR              ║ (RW) ║ f7       ║ (?)  ║
+    ║ ═════ ║ ═════════════════════════ ║ ════ ║ ════════ ║ ════ ║
+    ║ 13    ║ AC_ADD_AUTOCLEAN          ║ (RW) ║ 32       ║ 01   ║
+    ║ 13    ║ AC_ADD_SETKWH             ║ (RW) ║ 40       ║ 01   ║
+    ║ 13    ║ AC_ADD_CLEAR_FILTER_ALARM ║ (RW) ║ 44       ║ 01   ║
+    ║ 13    ║ AC_ADD_STARTWPS           ║ (RW) ║ 43       ║ 01   ║
+    ║ 13    ║ AC_ADD_SPI                ║ (RW) ║ 75       ║ 01   ║
+    ║ 13    ║ AC_OUTDOOR_TEMP           ║ (R)  ║ 76       ║ 01   ║
+    ║ 13    ║ AC_COOL_CAPABILITY        ║ (R)  ║ 77       ║ 02   ║
+    ║ 13    ║ AC_WARM_CAPABILITY        ║ (R)  ║ 78       ║ 02   ║
+    ║ 13    ║ AC_ADD_APMODE_END         ║ (W)  ║ ?        ║ (?)  ║
+    ║ ═════ ║ ═════════════════════════ ║ ════ ║ ════════ ║ ════ ║
+    ║ 14    ║ AC_ADD2_USEDWATT          ║ (R)  ║ 32       ║ 01   ║
+    ║ 14    ║ AC_SG_WIFI                ║ (W)  ║ 37       ║ 01   ║
+    ║ 14    ║ AC_SG_INTERNET            ║ (W)  ║ 38       ║ 01   ║
+    ║ 14    ║ AC_ADD2_OPTIONCODE        ║ (R)  ║ 39       ║ 02   ║
+    ║ 14    ║ AC_ADD2_USEDPOWER         ║ (R)  ║ e0       ║ 04   ║
+    ║ 14    ║ AC_ADD2_USEDTIME          ║ (R)  ║ e4       ║ 04   ║
+    ║ 14    ║ AC_ADD2_FILTER_USE_TIME   ║ (R)  ║ e6       ║ 02   ║
+    ║ 14    ║ AC_ADD2_CLEAR_POWERTIME   ║ (RW) ║ e8       ║ 01   ║
+    ║ 14    ║ AC_ADD2_FILTERTIME        ║ (RW) ║ e9       ║ 01   ║
+    ║ 14    ║ AC_ADD2_OUT_VERSION       ║ (R)  ║ f3       ║ 03   ║
+    ║ 14    ║ AC_ADD2_PANEL_VERSION     ║ (R)  ║ f4       ║ 03   ║
+    ║ 14    ║ AC_FUN_MODEL              ║ (R)  ║ f5       ║ 01   ║
+    ║ 14    ║ AC_ADD2_VERSION           ║ (RW) ║ f6       ║ 01   ║
+    ║ 14    ║ AC_SG_MACHIGH             ║ (W)  ║ f7       ║ 01   ║
+    ║ 14    ║ AC_SG_MACMID              ║ (W)  ║ f8       ║ 01   ║
+    ║ 14    ║ AC_SG_MACLOW              ║ (W)  ║ f9       ║ 01   ║
+    ║ 14    ║ AC_SG_VENDER01            ║ (W)  ║ fa       ║ 01   ║
+    ║ 14    ║ AC_SG_VENDER02            ║ (W)  ║ fb       ║ 01   ║
+    ║ 14    ║ AC_SG_VENDER03            ║ (W)  ║ fc       ║ 01   ║
+    ╚═══════╩═══════════════════════════╩══════╩══════════╩══════╝
 
 ### `1204` Commands
 Note: Most `1204` also pass the register `74` with always the same value.
