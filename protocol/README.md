@@ -37,18 +37,23 @@ Each payload may be decomposed in `command`, `sub`
 
 
 ## Types
-* `1204`: user commands
-* `1205`: ack - user commands
-* `1206`: values from AC
-* `1207`: ack - values from AC
-* `1302`: reset? registers
-* `1303`: values from AC (OutDoor?)
-* `1304`: Set
-* `1305`: ack - Set
-* `1402`: counters from unit
-* `1403`: ??? ack?
-* `1404`: wifi module status
-* `1405`: ??? ack?
+### HID
+* `1204`: WIFI -> AC: Send user commands
+* `1205`: AC -> WIFI: ack - user commands
+* `1206`: AC -> WIFI: current AC registers
+* `1207`: WIFI -> AC: ack - values from AC
+
+### Config
+* `1302`: WIFI -> AC: Request internal registers
+* `1303`: AC -> WIFI: ack - Request internal registers
+* `1304`: WIFI -> AC: Set internal registers
+* `1305`: AC -> WIFI: ack - Set internal registers
+
+### Internals
+* `1402`: WIFI -> AC: AC values
+* `1403`: AC -> WIFI: ack - AC values
+* `1404`: WIFI -> AC: wifi module status
+* `1405`: AC -> WIFI: ack - wifi module status
 
 ### `1204` Commands
 
@@ -152,7 +157,7 @@ TODO: To validate
 
 #### AC_FUN_ERROR
 
-        ╔════════════════════════════════════════════════════════════════════════╦════════════╦══════════╦════════╦══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╦══════════╦════════╦═══════╗
+    ╔════════════════════════════════════════════════════════════════════════╦════════════╦══════════╦════════╦══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╦══════════╦════════╦═══════╗
     ║                                                                        ║ length     ║ register ║ length ║                                                                    value                                                                     ║ register ║ length ║ value ║
     ╠════════════════════════════════════════════════════════════════════════╬════════════╬══════════╬════════╬══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╬══════════╬════════╬═══════╣
     ║ NULL                                                                   ║ 09         ║ f7       ║     04 ║ 4e554c4c                                                                                                                                     ║       74 ║     01 ║ 0f    ║
@@ -324,7 +329,7 @@ Request values from AC. AC will respond with `1403`.
 
 
     ╔═════════════════════════╦═════════╦══════════╦════════╦═══════════╗
-    ║                         ║ length  ║ register ║ length ║  comment  ║
+    ║                         ║ length  ║ register ║ value  ║  comment  ║
     ╠═════════════════════════╬═════════╬══════════╬════════╬═══════════╣
     ║                         ║      16 ║          ║        ║           ║
     ║ AC_ADD2_USEDWATT        ║         ║ 32       ║     00 ║ ?         ║
@@ -344,11 +349,6 @@ Request values from AC. AC will respond with `1403`.
 ### `1403` Commands
 
 From AC to Wifi. When message received, Wifi module also respond:
-
--> `1404 0c 170115180105190127fd0102` (Not decoded yet)
-
--> `1404 12 fa01f8fb0104fc012ef701d8f8013ef901a0`
-
 
     ╔═════════════════════════╦═════════╦══════════╦════════╦══════════╦═════════════════════════════════════╗
     ║                         ║ length  ║ register ║ length ║  value   ║               comment               ║
@@ -392,7 +392,6 @@ From AC to Wifi. When message received, Wifi module also respond:
     ╚═════╩═════════╩══════════╩════════╩═══════╝
 
 #### AC_ADD2_FILTERTIME
-Note: the `end` is another register value (`74`), but no info about it.
 
     ╔═════╦═════════╦══════════╦════════╦═══════╦══════════╦════════╦═══════╗
     ║     ║ length  ║ register ║ length ║ value ║ register ║ length ║ value ║
@@ -404,8 +403,7 @@ Note: the `end` is another register value (`74`), but no info about it.
     ║ 700 ║      06 ║ e9       ║     01 ║    04 ║       74 ║     01 ║ 0f    ║
     ╚═════╩═════════╩══════════╩════════╩═══════╩══════════╩════════╩═══════╝
 
-#### `0c`
-Vendor values ?
+#### Vendor request
 
     ╔══════════════╦═════════╦══════════╦════════╦═══════╗
     ║              ║ length  ║ register ║ length ║ value ║
@@ -417,8 +415,7 @@ Vendor values ?
     ║ ?            ║         ║ fd       ║     01 ║    02 ║
     ╚══════════════╩═════════╩══════════╩════════╩═══════╝
 
-#### `12`
-Vendor values ?
+#### Vendor receive
 
     ╔════════════════╦═════════╦══════════╦════════╦═══════╗
     ║                ║ length  ║ register ║ length ║ value ║
