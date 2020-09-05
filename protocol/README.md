@@ -61,6 +61,7 @@ Each payload may be decomposed in `command`, `sub`
     ╠═══════╬═══════════════════════════╬══════╬══════════╬══════╬══════╬═════════╣
     ║ 12    ║ AC_FUN_ENABLE             ║ (RW) ║ 01       ║ 01   ║ bool ║         ║
     ║ 12    ║ AC_FUN_POWER              ║ (RW) ║ 02       ║ 01   ║ bool ║         ║
+    ║ 12    ║ ?                         ║ (?)  ║ 41       ║ 01   ║      ║         ║
     ║ 12    ║ AC_FUN_OPMODE             ║ (RW) ║ 43       ║ 01   ║ enum ║         ║
     ║ 12    ║ AC_FUN_COMODE             ║ (RW) ║ 44       ║ 01   ║ enum ║         ║
     ║ 12    ║ AC_FUN_TEMPSET            ║ (RW) ║ 5a       ║ 01   ║ byte ║ range   ║
@@ -82,6 +83,9 @@ Each payload may be decomposed in `command`, `sub`
     ║ 13    ║ AC_WARM_CAPABILITY        ║ (R)  ║ 78       ║ 02   ║      ║         ║
     ║ 13    ║ AC_ADD_APMODE_END         ║ (W)  ║ ?        ║ (?)  ║      ║         ║
     ║ ═════ ║ ═════════════════════════ ║ ════ ║ ════════ ║ ════ ║ ════ ║ ═══════ ║
+    ║ 14    ║ ?                         ║ W?   ║ 17       ║ 01   ║      ║         ║
+    ║ 14    ║ ?                         ║ W?   ║ 18       ║ 01   ║      ║         ║
+    ║ 14    ║ ?                         ║ W?   ║ 19       ║ 01   ║      ║         ║
     ║ 14    ║ AC_ADD2_USEDWATT          ║ (R)  ║ 32       ║ 01   ║      ║         ║
     ║ 14    ║ AC_SG_WIFI                ║ (W)  ║ 37       ║ 01   ║ bool ║         ║
     ║ 14    ║ AC_SG_INTERNET            ║ (W)  ║ 38       ║ 01   ║ bool ║         ║
@@ -101,6 +105,7 @@ Each payload may be decomposed in `command`, `sub`
     ║ 14    ║ AC_SG_VENDER01            ║ (W)  ║ fa       ║ 01   ║      ║         ║
     ║ 14    ║ AC_SG_VENDER02            ║ (W)  ║ fb       ║ 01   ║      ║         ║
     ║ 14    ║ AC_SG_VENDER03            ║ (W)  ║ fc       ║ 01   ║      ║         ║
+    ║ 14    ║ ?                         ║ (?)  ║ fd       ║ 01   ║      ║         ║
     ╚═══════╩═══════════════════════════╩══════╩══════════╩══════╩══════╩═════════╝
 
 ### `1204` Commands
