@@ -83,8 +83,8 @@ Each payload may be decomposed in `command`, `sub`
     ║ 13    ║ AC_ADD_APMODE_END         ║ (W)  ║ ?        ║ (?)  ║      ║         ║
     ║ ═════ ║ ═════════════════════════ ║ ════ ║ ════════ ║ ════ ║ ════ ║ ═══════ ║
     ║ 14    ║ AC_ADD2_USEDWATT          ║ (R)  ║ 32       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_WIFI                ║ (W)  ║ 37       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_INTERNET            ║ (W)  ║ 38       ║ 01   ║      ║         ║
+    ║ 14    ║ AC_SG_WIFI                ║ (W)  ║ 37       ║ 01   ║ bool ║         ║
+    ║ 14    ║ AC_SG_INTERNET            ║ (W)  ║ 38       ║ 01   ║ bool ║         ║
     ║ 14    ║ AC_ADD2_OPTIONCODE        ║ (R)  ║ 39       ║ 02   ║      ║         ║
     ║ 14    ║ AC_ADD2_USEDPOWER         ║ (R)  ║ e0       ║ 04   ║ int4 ║         ║
     ║ 14    ║ AC_ADD2_USEDTIME          ║ (R)  ║ e4       ║ 04   ║ int4 ║         ║
