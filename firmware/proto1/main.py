@@ -3,6 +3,11 @@ from machine import Pin
 import uasyncio as asyncio
 import socket
 from ubinascii import hexlify
+import picoweb
+# import ulogging as logging
+import micropython
+import gc
+from samsungac import Command, CommandLookup
 
 s = socket.socket()
 s.connect(('192.168.125.64', 50007))
@@ -42,6 +47,8 @@ class Frame:
 
         self.checksum_computed = None
         self.checksum_valid = None
+        gc.collect()
+        micropython.mem_info()
 
     def append(self, data):
         if len(self.frame) == 0 and data != b'\xd0':
@@ -124,9 +131,9 @@ class Payload:
 
     def __init__(self, data):
         self.data = data
-        self.group = data[:2]
-        self.ack = data[2]
-        self.command = data[3:4]
+        self.group = bytes([data[1]])
+        self.ack = bytes([data[2]])
+        self.command = bytes(data[3:4])
         self.payload = data[4:]
         self._decode()
 
@@ -151,124 +158,20 @@ class Payload:
         return ack
 
     def _decode(self):
-        self.cmd = CMD(self.command, self.payload)
+        self.cmd = Command(lookup, storage, self.group, self.payload)
 
 
-class CMD:
-    GROUP = None
-    CMD = None
+class Storage:
+    def __init__(self):
+        self.storage = {}
 
-    command = None
-    payload = None
+    def set(self, command, register, value):
+        if command not in self.storage:
+            self.storage[command] = {}
+        self.storage[command][register] = value
 
-    values = None
-
-    # TODO, registers 43 and 44 apear multiple time
-    REGISTERS = {
-        b'\x01':    {'name': 'AC_FUN_ENABLE', 'allowed': {b'\x0f': 'Enable', b'\xf0': 'Disable'}},
-        b'\x02':    {'name': 'AC_FUN_POWER', 'allowed': {b'\x0f': 'Enable', b'\xf0': 'Disable'}},
-        b'\x41':    {'name': 'UNKNOWN_41', 'allowed': {}},
-        b'\x43':    {'name': 'AC_FUN_OPMODE', 'allowed': {b'\x12': 'Cool', b'\x22': 'Dry', b'\x32': 'Wind', b'\x42': 'Heat', b'\xe2': 'Auto'}},
-        b'\x44':    {'name': 'AC_FUN_COMODE', 'allowed': {b'\x12': 'Off', b'\x22': 'TurboMode', b'\x32': 'Smart', b'\x42': 'Sleep', b'\x52': 'Quiet', b'\x62': 'SoftCool', b'\x82': 'WindMode1', b'\x92': 'WindMode2', b'\xa2': 'WindMode3'}},
-        b'\x5a':    {'name': 'AC_FUN_TEMPSET', 'allowed': {}},
-        b'\x5c':    {'name': 'AC_FUN_TEMPNOW', 'allowed': {}},
-        b'\x62':    {'name': 'AC_FUN_WINDLEVEL', 'allowed': {b'\x00': 'Auto', b'\x12': 'Low', b'\x14': 'Mid', b'\x16': 'High', b'\x18': 'Turbo'}},
-        b'\x63':    {'name': 'AC_FUN_DIRECTION', 'allowed': {b'\x12': 'Off', b'\x21': 'Indirect', b'\x31': 'Direct', b'\x41': 'Center', b'\x51': 'Wide', b'\x61': 'Left', b'\x71': 'Right', b'\x81': 'Long', b'\x92': 'SwingUD', b'\xa2': 'SwingLR', b'\xb2': 'Rotation', b'\xc2': 'Fixed'}},
-        b'\x73':    {'name': 'AC_FUN_SLEEP', 'allowed': {}},
-        b'\xea':    {'name': 'UNKNOWN_EA', 'allowed': {}},
-        b'\xf7':    {'name': 'AC_FUN_ERROR', 'allowed': {}},
-    }
-
-
-    REGISTERS2 = {
-        b'\x32':    {'name': 'AC_ADD_AUTOCLEAN', 'allowed': {b'\x22': 'On', b'\x23': 'Off'}},
-        b'\x37':    {'name': 'AC_SG_WIFI', 'allowed': {b'\x0f': 'Connected', b'\xf0': 'Disconnected'}},
-        b'\x38':    {'name': 'AC_SG_INTERNET', 'allowed': {b'\x0f': 'Connected', b'\xf0': 'Disconnected'}},
-        b'\x39':    {'name': 'AC_ADD2_OPTIONCODE', 'allowed': {}},
-        b'\x40':    {'name': 'AC_ADD_SETKWH', 'allowed': {}},
-        b'\x42':    {'name': 'AC_ADD2_USEDWATT', 'allowed': {}},
-        b'\x43':    {'name': 'AC_ADD_STARTWPS', 'allowed': {}},
-        b'\x44':    {'name': 'AC_ADD_CLEAR_FILTER_ALARM', 'allowed': {}},
-        b'\x75':    {'name': 'AC_ADD_SPI', 'allowed': {}},
-        b'\x76':    {'name': 'AC_OUTDOOR_TEMP', 'allowed': {}},
-        b'\x77':    {'name': 'AC_COOL_CAPABILITY', 'allowed': {}},
-        b'\x78':    {'name': 'AC_WARM_CAPABILITY', 'allowed': {}},
-        b'\xe0':    {'name': 'AC_ADD2_USEDPOWER', 'allowed': {}},
-        b'\xe4':    {'name': 'AC_ADD2_USEDTIME', 'allowed': {}},
-        b'\xe6':    {'name': 'AC_ADD2_FILTER_USE_TIME', 'allowed': {}},
-        b'\xe8':    {'name': 'AC_ADD2_CLEAR_POWERTIME', 'allowed': {}},
-        b'\xe9':    {'name': 'AC_ADD2_FILTERTIME', 'allowed': {}},
-        b'\xf3':    {'name': 'AC_ADD2_OUT_VERSION', 'allowed': {}},
-        b'\xf4':    {'name': 'AC_ADD2_PANEL_VERSION', 'allowed': {}},
-        b'\xf5':    {'name': 'AC_FUN_MODEL', 'allowed': {}},
-        b'\xf6':    {'name': 'AC_ADD2_VERSION', 'allowed': {}},
-        b'\xf7':    {'name': 'AC_SG_MACHIGH', 'allowed': {}},
-        b'\xf8':    {'name': 'AC_SG_MACMID', 'allowed': {}},
-        b'\xf9':    {'name': 'AC_SG_MACLOW', 'allowed': {}},
-        b'\xfa':    {'name': 'AC_SG_VENDER01', 'allowed': {}},
-        b'\xfb':    {'name': 'AC_SG_VENDER02', 'allowed': {}},
-        b'\xfc':    {'name': 'AC_SG_VENDER03', 'allowed': {}},
-    }
-
-    def get_register_details(self, register):
-        if register in self.REGISTERS.keys():
-            return self.REGISTERS[register]
-        if register in self.REGISTERS2.keys():
-            return self.REGISTERS2[register]
-
-        return {'name': 'UNKNOWN_{:0>2x}'.format(int.from_bytes(register, "big")), 'allowed': {}}
-
-    def get_value_mapping(self, register, value):
-        allowed = None
-        if register in self.REGISTERS.keys():
-            allowed = self.REGISTERS[register]['allowed']
-        if register in self.REGISTERS2.keys():
-            allowed = self.REGISTERS2[register]['allowed']
-
-        if value and allowed and value in allowed.keys():
-            return allowed[value]
-        return value
-
-    def __init__(self, command, payload):
-        self.command = command
-        self.payload = payload
-
-        self.values = []
-        idx = 0
-        while True:
-            register = bytes([payload[0 + idx]])
-            length = payload[1 + idx]
-            value = bytes(payload[2 + idx:2 + length + idx])
-            t = (
-                register,
-                length,
-                int.from_bytes(value, "big"),
-                self.get_register_details(register)['name'],
-                self.get_value_mapping(register, value),
-            )
-            idx += 2 + length
-            self.values.append(t)
-
-            if idx == len(self.payload):
-                break
-
-            if idx >= len(self.payload):
-                print("Should not happen")
-                break
-
-    def print(self):
-        for val in self.values:
-            write(val[0])
-            write(val[1])
-            write(val[2])
-            write('.')
-
-    def print_txt(self):
-        for val in self.values:
-            if isinstance(val[4], bytes):
-                print('{}:{} '.format(val[3], int.from_bytes(val[4], "big")), end='')
-            else:
-                print('{}:{} '.format(val[3], val[4]), end='')
+    def get(self, command, register):
+        return self.storage[command][register]
 
 
 async def receiver():
@@ -280,6 +183,19 @@ async def receiver():
             # pass
             # print(hexlify(res))
             frame.append(res)
+
+
+def index(req, resp):
+    yield from picoweb.start_response(resp)
+    yield from app.render_template(resp, "squares.tpl", (req, storage, lookup))
+
+
+ROUTES = [
+    ("/", index),
+    ("/css/chota.min.css", lambda req, resp: (yield from app.sendfile(resp, "css/chota.min.css"))),
+]
+# logging.basicConfig(level=logging.INFO)
+app = picoweb.WebApp(__name__, ROUTES)
 
 
 async def blink(led, period_ms):
@@ -294,13 +210,18 @@ async def main():
     asyncio.create_task(blink(Pin(16, Pin.OUT), 700))
     asyncio.create_task(blink(Pin(2, Pin.OUT), 400))
     asyncio.create_task(receiver())
-    while True:
-        await asyncio.sleep(1)
-
+    # while True:
+    #     await asyncio.sleep(1)
+    print('Starting webserver')
+    app.run(debug=1, host='0.0.0.0')
 
 try:
+    storage = Storage()
+    lookup = CommandLookup()
     asyncio.run(main())
 except KeyboardInterrupt:
     print('Interrupted')
+finally:
+    s.close()
 
 print('END.')
