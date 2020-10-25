@@ -100,8 +100,7 @@ Each payload may be decomposed in `command`, `sub`
     ║ 1404  ║ AC_ADD2_OUT_VERSION       ║ (R)  ║ f3       ║ 03   ║ char ║ 1406 R  ║
     ║ 1406  ║ AC_ADD2_PANEL_VERSION     ║ (R)  ║ f4       ║ 03   ║ char ║         ║
     ║ 1406  ║ AC_FUN_MODEL              ║ (R)  ║ f5       ║ 01   ║      ║         ║
-    ║ 1402  ║ AC_ADD2_VERSION           ║ (RW) ║ f6       ║ 02   ║      ║ request mac  ║
-    ║ 1406  ║ AC_ADD2_VERSION           ║ (RW) ║ f6       ║ 02   ║      ║ read version ║
+    ║ 1406  ║ AC_ADD2_VERSION           ║ (RW) ║ f6       ║ 02   ║      ║ 1402 request mac ║
     ║ 1404  ║ AC_SG_MACHIGH             ║ (W)  ║ f7       ║ 01   ║      ║         ║
     ║ 1404  ║ AC_SG_MACMID              ║ (W)  ║ f8       ║ 01   ║      ║         ║
     ║ 1404  ║ AC_SG_MACLOW              ║ (W)  ║ f9       ║ 01   ║      ║         ║
