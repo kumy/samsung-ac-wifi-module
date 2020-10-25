@@ -38,6 +38,8 @@ Each payload may be decomposed in `command`, `sub`
 
 ## Types
 ### HID
+* `1202`: WIFI -> AC: Request internal registers
+* `1203`: AC -> WIFI: ack - Request internal registers
 * `1204`: WIFI -> AC: Send user commands
 * `1205`: AC -> WIFI: ack - user commands
 * `1206`: AC -> WIFI: current AC registers
@@ -50,8 +52,8 @@ Each payload may be decomposed in `command`, `sub`
 * `1305`: AC -> WIFI: ack - Set internal registers
 
 ### Internals
-* `1402`: WIFI -> AC: AC values
-* `1403`: AC -> WIFI: ack - AC values
+* `1402`: WIFI -> AC: Request internal registers
+* `1403`: AC -> WIFI: ack - Request internal registers
 * `1404`: WIFI -> AC: wifi module status
 * `1405`: AC -> WIFI: ack - wifi module status
 
@@ -61,7 +63,7 @@ Each payload may be decomposed in `command`, `sub`
     ╠═══════╬═══════════════════════════╬══════╬══════════╬══════╬══════╬═════════╣
     ║ 12    ║ AC_FUN_ENABLE             ║ (RW) ║ 01       ║ 01   ║ bool ║         ║
     ║ 12    ║ AC_FUN_POWER              ║ (RW) ║ 02       ║ 01   ║ bool ║         ║
-    ║ 12    ║ ?                         ║ (?)  ║ 41       ║ 01   ║      ║         ║
+    ║ 12    ║ ?                         ║ (?)  ║ 41       ║ 01   ║      ║ 0x15?   ║
     ║ 12    ║ AC_FUN_OPMODE             ║ (RW) ║ 43       ║ 01   ║ enum ║         ║
     ║ 12    ║ AC_FUN_COMODE             ║ (RW) ║ 44       ║ 01   ║ enum ║         ║
     ║ 12    ║ AC_FUN_TEMPSET            ║ (RW) ║ 5a       ║ 01   ║ byte ║ range   ║
@@ -102,14 +104,18 @@ Each payload may be decomposed in `command`, `sub`
     ║ 14    ║ AC_SG_MACHIGH             ║ (W)  ║ f7       ║ 01   ║      ║         ║
     ║ 14    ║ AC_SG_MACMID              ║ (W)  ║ f8       ║ 01   ║      ║         ║
     ║ 14    ║ AC_SG_MACLOW              ║ (W)  ║ f9       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_VENDER01            ║ (W)  ║ fa       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_VENDER02            ║ (W)  ║ fb       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_VENDER03            ║ (W)  ║ fc       ║ 01   ║      ║         ║
+    ║ 14    ║ AC_SG_VENDER01 (mac)      ║ (W)  ║ fa       ║ 01   ║      ║         ║
+    ║ 14    ║ AC_SG_VENDER02 (mac)      ║ (W)  ║ fb       ║ 01   ║      ║         ║
+    ║ 14    ║ AC_SG_VENDER03 (mac)      ║ (W)  ║ fc       ║ 01   ║      ║         ║
     ║ 14    ║ ?                         ║ (?)  ║ fd       ║ 01   ║      ║         ║
     ╚═══════╩═══════════════════════════╩══════╩══════════╩══════╩══════╩═════════╝
 
+Note: [mac are bound to Samsung](https://hwaddress.com/oui-iab/F8-04-2E/) So we'll use the same thre start bytes and concatenate with the last 3 bytes from hardware used.
+Note2: What is the exact meaning of `AC_FUN_ENABLE`?
+
 ### `1204` Commands
 Note: Most `1204` also pass the register `74` with always the same value.
+Note edit: `74` register should be the AC "BIP"
 
 #### AC_FUN_ENABLE
 
