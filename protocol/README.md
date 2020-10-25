@@ -95,18 +95,19 @@ Each payload may be decomposed in `command`, `sub`
     ║ 14    ║ AC_ADD2_USEDPOWER         ║ (R)  ║ e0       ║ 04   ║ int4 ║         ║
     ║ 14    ║ AC_ADD2_USEDTIME          ║ (R)  ║ e4       ║ 04   ║ int4 ║         ║
     ║ 14    ║ AC_ADD2_FILTER_USE_TIME   ║ (R)  ║ e6       ║ 02   ║ int2 ║         ║
-    ║ 14    ║ AC_ADD2_CLEAR_POWERTIME   ║ (RW) ║ e8       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_ADD2_FILTERTIME        ║ (RW) ║ e9       ║ 01   ║ enum ║         ║
-    ║ 14    ║ AC_ADD2_OUT_VERSION       ║ (R)  ║ f3       ║ 03   ║ char ║         ║
-    ║ 14    ║ AC_ADD2_PANEL_VERSION     ║ (R)  ║ f4       ║ 03   ║ char ║         ║
-    ║ 14    ║ AC_FUN_MODEL              ║ (R)  ║ f5       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_ADD2_VERSION           ║ (RW) ║ f6       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_MACHIGH             ║ (W)  ║ f7       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_MACMID              ║ (W)  ║ f8       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_MACLOW              ║ (W)  ║ f9       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_VENDER01 (mac)      ║ (W)  ║ fa       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_VENDER02 (mac)      ║ (W)  ║ fb       ║ 01   ║      ║         ║
-    ║ 14    ║ AC_SG_VENDER03 (mac)      ║ (W)  ║ fc       ║ 01   ║      ║         ║
+    ║ 1404  ║ AC_ADD2_CLEAR_POWERTIME   ║ (RW) ║ e8       ║ 01   ║      ║ 1406 R  ║
+    ║ 1404  ║ AC_ADD2_FILTERTIME        ║ (RW) ║ e9       ║ 01   ║ enum ║ 1406 R  ║
+    ║ 1404  ║ AC_ADD2_OUT_VERSION       ║ (R)  ║ f3       ║ 03   ║ char ║ 1406 R  ║
+    ║ 1406  ║ AC_ADD2_PANEL_VERSION     ║ (R)  ║ f4       ║ 03   ║ char ║         ║
+    ║ 1406  ║ AC_FUN_MODEL              ║ (R)  ║ f5       ║ 01   ║      ║         ║
+    ║ 1402  ║ AC_ADD2_VERSION           ║ (RW) ║ f6       ║ 02   ║      ║ request mac  ║
+    ║ 1406  ║ AC_ADD2_VERSION           ║ (RW) ║ f6       ║ 02   ║      ║ read version ║
+    ║ 1404  ║ AC_SG_MACHIGH             ║ (W)  ║ f7       ║ 01   ║      ║         ║
+    ║ 1404  ║ AC_SG_MACMID              ║ (W)  ║ f8       ║ 01   ║      ║         ║
+    ║ 1404  ║ AC_SG_MACLOW              ║ (W)  ║ f9       ║ 01   ║      ║         ║
+    ║ 1404  ║ AC_SG_VENDER01 (mac)      ║ (W)  ║ fa       ║ 01   ║      ║         ║
+    ║ 1404  ║ AC_SG_VENDER02 (mac)      ║ (W)  ║ fb       ║ 01   ║      ║         ║
+    ║ 1404  ║ AC_SG_VENDER03 (mac)      ║ (W)  ║ fc       ║ 01   ║      ║         ║
     ║ 14    ║ ?                         ║ (?)  ║ fd       ║ 01   ║      ║         ║
     ╚═══════╩═══════════════════════════╩══════╩══════════╩══════╩══════╩═════════╝
 
