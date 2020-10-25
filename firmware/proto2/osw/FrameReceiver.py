@@ -2,7 +2,7 @@
 import sys
 from binascii import hexlify
 
-from osw.Frame import Frame
+from osw.Frame import Frame, raw2print
 from osw.FrameBuilder import build_frame_ack
 
 try:
@@ -33,6 +33,10 @@ class FrameReceiver:
         self.set_streamer(streamer)
 
         while True:
+            if self.streamer is None:
+                await asyncio.sleep(1)
+                continue
+
             char = await self.streamer.read()
 
             if char == b'' or char is None:
@@ -41,6 +45,7 @@ class FrameReceiver:
                 print('D: FrameReceiver.process: Client disconnected! - DEBUG 3')
                 break
 
+            # print('D: FrameReceiver.process(): {}'.format(hexlify(char)))
             self.append(char)
 
     def append(self, char):
@@ -66,15 +71,18 @@ class FrameReceiver:
         self._process_frame()
 
     def _process_frame(self):
-        print('D: FrameReceiver._process_frame(): {}'.format(hexlify(self.raw)))
+        print('D: FrameReceiver._process_frame(): receive: {}'.format(raw2print(self.raw)))
         frame = Frame(self.raw)
         self.reset()
-        self.storage.set_frame(frame)
+        if not frame.valid:
+            return
+        if not frame.is_request():
+            self.storage.set_frame(frame)
 
         if frame.is_ack():
             self.spooler.receive_ack(frame)
         else:
-            self.spooler.append(build_frame_ack(frame))
+            self.spooler.append(build_frame_ack(frame, self.storage))
 
 
 def test():

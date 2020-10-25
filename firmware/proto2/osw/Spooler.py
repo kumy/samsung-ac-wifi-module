@@ -15,7 +15,7 @@ import collections
 
 class Spooler:
     _queue = collections.deque(tuple(), 10)
-    _ack_queue = list()
+    _ack_queue = dict()
 
     def __init__(self, streamer, counter):
         self.streamer = streamer
@@ -25,13 +25,13 @@ class Spooler:
         self._queue.append(frame)
 
     def append_pending_ack(self, frame):
-        self._ack_queue.append(build_frame_ack(frame).get())
+        self._ack_queue[frame.counter] = frame
 
     def receive_ack(self, frame):
-        try:
-            self._ack_queue.remove(frame.get())
-        except ValueError:
-            print('W: unattended ack received with counter id: {}'.format(frame.counter))
+        if frame.counter not in self._ack_queue.keys():
+            print('W: unattended ack received with counter id: {}'.format(hexlify(frame.counter)))
+            return
+        del self._ack_queue[frame.counter]
 
     async def process(self):
         while True:
@@ -40,12 +40,14 @@ class Spooler:
                 continue
 
             frame = self._queue.popleft()
-            print('D: Spooler.process(): send {}'.format(hexlify(frame.get())))
+            print('D: Spooler.process()             : send     {}'.format(frame))
             if await self.streamer.write(frame.get()):
                 self.counter.save(frame.counter)
             else:
                 # requeue
                 self.append(frame)
+                # TODO sort spool by counter?
                 print('W: Spooler.process(): Not connected, re-spool frame')
-                await asyncio.sleep(1)
+
+            await asyncio.sleep(1)
 

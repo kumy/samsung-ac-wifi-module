@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from osw.Webserver import start_web
 
 try:
     import asyncio
@@ -23,10 +24,6 @@ class Streamer:
             return
 
         return await self._sreader.read(1)
-        # try:
-        #     pass
-        # except KeyboardInterrupt:
-        #     return
 
     async def write(self, data):
         if self._swriter is None:
@@ -48,31 +45,19 @@ class Streamer:
         print('D: Streamer.connect()')
         try:
             self._sreader, self._swriter = await asyncio.open_connection('127.0.0.1', 8888)
-            # self.spooler.set_streams(reader, writer)
             print('D: Streamer: connected!')
         except:
             print('D: Streamer still not connected')
             # await asyncio.sleep(1)
             # pass
 
-    async def serve(self):
+    async def serve(self, receiver):
         self.is_server = True
-        from osw.Storage import Storage
-        from osw.FrameCounter import FrameCounter
-        from osw.FrameReceiver import FrameReceiver
-        from osw.Spooler import Spooler
 
         async def client_connected_cb(reader, writer):
             print('D: Streamer: Client connected!')
             self._sreader, self._swriter = (reader, writer)
-            storage = Storage()
-            counter = FrameCounter()
-            spooler = Spooler(self, counter)
-            task_spooler = asyncio.create_task(spooler.process())
-            receiver = FrameReceiver(storage, spooler)
-            await receiver.process(self)
-            task_spooler.cancel()
-            print('D: Streamer: Client connected! END')
+            receiver.streamer = self
 
         await asyncio.start_server(client_connected_cb, port=8888)
         print('D: Streamer: Listening connections!')

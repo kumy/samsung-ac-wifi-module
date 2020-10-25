@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 from binascii import hexlify
 
-try:
-    from network import WLAN
-    mac = WLAN().config('mac')
-except ImportError:
-    mac = bytes.fromhex('deadbeefdead')
-
 
 def x_to_bytearray(value):
     return x_to_bytes(value)
@@ -72,12 +66,12 @@ class Storage:
                 b'\xfd': b'\x02',
 
                 # Mac address
-                b'\xfa': bytes([mac[0]]),
-                b'\xfb': bytes([mac[1]]),
-                b'\xfc': bytes([mac[2]]),
-                b'\xf7': bytes([mac[3]]),
-                b'\xf8': bytes([mac[4]]),
-                b'\xf9': bytes([mac[5]]),
+                b'\xfa': b'\x00',
+                b'\xfb': b'\x00',
+                b'\xfc': b'\x00',
+                b'\xf7': b'\x00',
+                b'\xf8': b'\x00',
+                b'\xf9': b'\x00',
             },
         }
 
@@ -99,14 +93,14 @@ class Storage:
         self.storage[cmd][reg] = value
 
     def set_frame(self, frame):
-        pass
+        for val in frame.values:
+            self.set(frame.command, val[0], val[1])
 
 
 def test():
     print('Hello Test')
 
     print('TEST 1:')
-    print(mac)
 
     print('TEST 2:')
     storage = Storage()
