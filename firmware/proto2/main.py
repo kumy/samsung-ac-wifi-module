@@ -1,59 +1,161 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from binascii import hexlify
-
-from aiohttp import web
-
-from osw.FrameReceiver import FrameReceiver
-from osw.Streamer import Streamer
-from osw.Webserver import start_web
-
-try:
-    import asyncio
-except:
-    import uasyncio as asyncio
-
-from osw.FrameBuilder import build_frame
-from osw.FrameCounter import FrameCounter
-from osw.Spooler import Spooler
-from osw.Storage import Storage
-
-storage = Storage()
-streamer = Streamer()
-counter = FrameCounter()
-spooler = Spooler(streamer, counter)
-receiver = FrameReceiver(storage, spooler)
 
 
-def send_init():
-    build_frame(spooler, storage, counter, b'\x12\x04', (b'\x01', b'\x74'))
-    build_frame(spooler, storage, counter, b'\x14\x04', (b'\x17', b'\x18', b'\x19', b'\xfd'))
-    build_frame(spooler, storage, counter, b'\x14\x04', (b'\xfa', b'\xfb', b'\xfc', b'\xf7', b'\xf8', b'\xf9'))
-    build_frame(spooler, storage, counter, b'\x13\x02', (b'\x32', b'\x40', b'\x44', b'\x43', b'\x75', b'\x76', b'\x77', b'\x78'))
-    build_frame(spooler, storage, counter, b'\x14\x02', (b'\x32', b'\xf6', b'\xf4', b'\xf3', b'\xf5', b'\x39', b'\xe0', b'\xe4', b'\xe8', b'\xe9', b'\xe6'))
-    build_frame(spooler, storage, counter, b'\x14\x04', (b'\x37', ))
-    build_frame(spooler, storage, counter, b'\x14\x04', (b'\x38', ))
+# from machine import UART
+# import uos
+# import socket
+# from ubinascii import hexlify
+#
+#
+# s = socket.socket()
+# s.connect(('192.168.125.64', 8888))
+# s.send(b'Hello\n')
+#
+# uos.dupterm(None, 1)
+# uart = UART(0, baudrate=9600)
+# uart.init(rxbuf=100)
+# print('HELLO')
+#
+#
+# def receiver(uart, soc):
+#     while True:
+#         res = uart.read(1)
+#         if res:
+#             print(hexlify(res))
+#             soc.send(res)
+#
+#
+# def mainUart(uart, swriter):
+#     receiver(uart, swriter)
+#
+#
+# try:
+#     mainUart(uart, s)
+# except KeyboardInterrupt:
+#     print('Interrupted')
+# finally:
+#     uart = UART(0, 115200)
+#     uos.dupterm(uart, 1)
+
+#########################################
+
+# import uos
+# from machine import UART, Pin
+#
+# try:
+#     import asyncio
+# except:
+#     import uasyncio as asyncio
+#
+# HOST='192.168.125.64'
+# PORT=8888
+#
+#
+# async def blink(led, period_ms):
+#     while True:
+#         led.off()
+#         await asyncio.sleep_ms(5)
+#         led.on()
+#         await asyncio.sleep_ms(period_ms)
+#
+#
+# async def uart_reader(ureader, swriter):
+#     while True:
+#         char = await ureader.read(1)
+#         print('uart_reader:', char)
+#         swriter.write(char)
+#         await swriter.drain()
+#
+#
+# async def socket_reader(sreader, uwriter):
+#     while True:
+#         char = await sreader.read(1)
+#         print('socket_reader:', char)
+#         uwriter.write(char)
+#         await uwriter.drain()
+#
+#
+# async def main():
+#     sreader, swriter = await asyncio.open_connection(HOST, PORT)
+#     swriter.write(b' HELLO !!!')
+#     await swriter.drain()
+#     uart = UART(0, baudrate=9600)
+#     uart.init(rxbuf=100)
+#     uos.dupterm(None, 1)
+#     ureader = asyncio.StreamReader(uart)
+#     swriter.write(b' HELLO 2 !!!')
+#
+#     asyncio.create_task(blink(Pin(16, Pin.OUT), 700))
+#     asyncio.create_task(blink(Pin(2, Pin.OUT), 400))
+#     asyncio.create_task(uart_reader(ureader, swriter))
+#     asyncio.create_task(socket_reader(sreader, ureader))
+#     while True:
+#         await asyncio.sleep(1)
+#
+# try:
+#     asyncio.run(main())
+# except KeyboardInterrupt:
+#     print('Interrupted')
+# finally:
+#     uart = UART(0, 115200)
+#     uos.dupterm(uart, 1)
+#
+# print('END.')
+
+####################
+
+from machine import UART
+import uos
+import uasyncio as asyncio
+from ubinascii import hexlify
+
+
+uart = UART(0, baudrate=9600)
+uart.init(rxbuf=100)
+uos.dupterm(None, 1)
+
+
+async def uart_reader(ureader, swriter):
+    swriter.write('U')
+    await swriter.drain()
+    while True:
+        res = await ureader.read(100)
+        if res is not None:
+            print('uart_reader:', hexlify(res))
+            swriter.write(res)
+            await swriter.drain()
+
+
+async def socket_reader(sreader, uwriter):
+    sreader.write('S')
+    await sreader.drain()
+    while True:
+        res = await sreader.read(100)
+        print('socket_reader:', hexlify(res))
+        uwriter.write(res)
+        await uwriter.drain()
 
 
 async def main():
-    print('Hello World')
-    await streamer.connect()
+    ureader = asyncio.StreamReader(uart)
+    sreader, swriter = await asyncio.open_connection('192.168.125.64', 8888)
 
-    asyncio.create_task(spooler.process())
-    asyncio.create_task(receiver.process(streamer))
+    asyncio.create_task(uart_reader(ureader, swriter))
+    await asyncio.sleep(1)
+    asyncio.create_task(socket_reader(sreader, ureader))
 
-    send_init()
-    return start_web(storage)
-    # while True:
-    #     await asyncio.sleep(1)
+    while True:
+        await asyncio.sleep(1)
 
 
-if __name__ == "__main__":
-    # execute only if run as a script
-    try:
-        web.run_app(main(), port=5050)
-    except KeyboardInterrupt:
-        pass
+try:
+    asyncio.run(main())
+except KeyboardInterrupt:
+    print('Interrupted')
+finally:
+    uart = UART(0, 115200)
+    uos.dupterm(uart, 1)
+    print('END')
 
-# 0xd00xc00x020x120x000x000x000x000x000x000xfe0x120x040x060x010x010x0f0x740x010xf00x640xe0
-# d0c0 0212 0000 0000 0000 fe12 0406 0101 0f74 01f0 64e0
+print('END.')
+
